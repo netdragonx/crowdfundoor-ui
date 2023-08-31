@@ -14,3 +14,116 @@ a {
 * {
   box-sizing: border-box;
 }
+
+.app {
+  text-align: center;
+  font-family: "Roboto", "Open Sans", "Helvetica Neue", sans-serif;
+  color: #333;
+  width: 100%;
+}
+
+.app-header {
+  padding: 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.app-header > div {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.app-header a {
+  text-decoration: underline;
+}
+
+.app-header a:hover {
+  color: #5fb0cc;
+}
+
+.app-body {
+  padding-top: 20px;
+}
+
+/* .connect-button {
+  padding: 4px 12px;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+} */
+
+.form-container {
+  margin: 20px;
+  padding: 20px;
+  border: 2px solid #add8e6;
+  border-radius: 10px;
+  background-color: #f0f8ff;
+}
+
+form input {
+  margin: 10px;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #add8e6;
+}
+/* 
+form button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #87ceeb;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+} */
+/* 
+form button:hover {
+  background-color: #add8e6;
+} */
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  padding: 10px;
+  border-bottom: 1px solid #add8e6;
+}
+
+li:last-child {
+  border-bottom: none;
+}
+
+.campaign-details {
+  display: block;
+  overflow: auto;
+}
+
+.campaign-action {
+  padding: 25px 10px;
+  margin: 0px;
+  margin-top: 20px;
+  min-height: 240px;
+  background-color: #fff;
+  border: 2px solid #add8e6;
+  border-radius: 10px;
+}
+
+.campaign-action button,
+.campaign-action input {
+  margin: 10px;
+  display: block;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.total-donated {
+  font-size: 28px;
+  font-weight: bold;
+}

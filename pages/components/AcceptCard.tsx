@@ -132,11 +132,17 @@ export default function AcceptCard({ contractAddress, campaign }: Props) {
 
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
+    const target = e.target as HTMLFormElement;
+
+    if (target.minimumAmount.value == "") {
+      return false;
+    }
+
+    setMinimumAmount(target.minimumAmount.value);
 
     if (!isApproved) {
       setDoWriteApproval(true);
     } else {
-      setMinimumAmount(campaign?.amount);
       setDoWrite(true);
     }
   };
@@ -174,53 +180,60 @@ export default function AcceptCard({ contractAddress, campaign }: Props) {
             placeholder="Enter current offer in ETH (MEV bot protection)"
           />
 
-          {isHodler ? (
-            <>
-              {!isApproved && (
-                <Button
-                  type="submit"
-                  disabled={!isConnected || campaign.isAccepted}
-                >
-                  Approve Crowdfundoor
-                </Button>
-              )}
-              {isApproved && (
-                <Button
-                  type="submit"
-                  disabled={!isConnected || campaign.isAccepted}
-                >
-                  Accept &amp; Transfer
-                </Button>
-              )}
-            </>
-          ) : (
-            <>
-              <Button type="submit" disabled>
-                Your wallet doesn&apos;t hodl the NFT
-              </Button>
-            </>
+          {!isLoading &&
+            !isLoadingTx &&
+            !isLoadingApproval &&
+            !isLoadingApprovalTx && (
+              <>
+                {isHodler ? (
+                  <>
+                    {!isApproved && (
+                      <Button
+                        type="submit"
+                        disabled={!isConnected || campaign.isAccepted}
+                      >
+                        Approve Crowdfundoor
+                      </Button>
+                    )}
+                    {isApproved && (
+                      <Button
+                        type="submit"
+                        disabled={!isConnected || campaign.isAccepted}
+                      >
+                        Accept &amp; Transfer
+                      </Button>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <Button type="submit" disabled>
+                      Your wallet doesn&apos;t hodl the NFT
+                    </Button>
+                  </>
+                )}
+              </>
+            )}
+          {(isLoading ||
+            isLoadingTx ||
+            isLoadingApproval ||
+            isLoadingApprovalTx) && (
+            <BarLoader
+              width="65%"
+              cssOverride={{
+                marginLeft: "auto",
+                marginRight: "auto",
+                marginTop: "1rem",
+                marginBottom: "1rem",
+              }}
+            />
+          )}
+          {(isError || isErrorTx) && (
+            <div>
+              <div>{isError || isErrorTx}</div>
+            </div>
           )}
         </Form>
       </div>
-      {(isLoading ||
-        isLoadingTx ||
-        isLoadingApproval ||
-        isLoadingApprovalTx) && (
-        <BarLoader
-          width="65%"
-          cssOverride={{
-            marginLeft: "auto",
-            marginRight: "auto",
-            marginTop: "1rem",
-            marginBottom: "0.5rem",
-          }}
-        />
-      )}
-      {(isError || isErrorTx) && (
-        <div>
-          <div>{isError || isErrorTx}</div>
-        </div>
-      )}
     </>
   );
 }

@@ -82,10 +82,9 @@ li:last-child {
 }
 
 .campaign-action {
-  padding: 25px 10px;
+  padding: 25px 10px 0px;
   margin: 0px;
   margin-top: 20px;
-  min-height: 240px;
   background-color: #fff;
   border: 2px solid #add8e6;
   border-radius: 10px;

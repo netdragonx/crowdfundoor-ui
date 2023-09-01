@@ -80,26 +80,32 @@ export default function DonateCard({ contractAddress, campaign }: Props) {
             disabled={!isConnected}
           />
 
-          <Button type="submit" disabled={!isConnected || campaign.isAccepted}>
-            Donate
-          </Button>
+          {!isLoading && !isLoadingTx && (
+            <Button
+              type="submit"
+              disabled={!isConnected || campaign.isAccepted}
+            >
+              Donate
+            </Button>
+          )}
+
+          {(isLoading || isLoadingTx) && (
+            <BarLoader
+              width="65%"
+              cssOverride={{
+                marginLeft: "auto",
+                marginRight: "auto",
+                marginTop: "1rem",
+                marginBottom: "1rem",
+              }}
+            />
+          )}
+          {(isError || isErrorTx) && (
+            <div>
+              <div>{isError || isErrorTx}</div>
+            </div>
+          )}
         </Form>
-        {(isLoading || isLoadingTx) && (
-          <BarLoader
-            width="65%"
-            cssOverride={{
-              marginLeft: "auto",
-              marginRight: "auto",
-              marginTop: "1rem",
-              marginBottom: "0.5rem",
-            }}
-          />
-        )}
-        {(isError || isErrorTx) && (
-          <div>
-            <div>{isError || isErrorTx}</div>
-          </div>
-        )}
       </div>
     </>
   );

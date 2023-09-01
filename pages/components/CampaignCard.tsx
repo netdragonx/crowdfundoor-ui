@@ -14,9 +14,7 @@ export default function CampaignCard({ campaign }: Props) {
       <h4>Campaign #{campaign.campaignId} </h4>
       {!campaign.isAccepted ? (
         <>
-          <p style={{ color: "green" }}>
-            <strong>Status:</strong> Active
-          </p>
+          <p style={{ color: "green" }}>Active</p>
           <p>
             <span className="total-donated">
               {ethers.utils.formatEther(ethers.BigNumber.from(campaign.amount))}{" "}
@@ -27,9 +25,7 @@ export default function CampaignCard({ campaign }: Props) {
           </p>
         </>
       ) : (
-        <p style={{ color: "red" }}>
-          <strong>Status:</strong> Ended
-        </p>
+        <p style={{ color: "red" }}>Ended</p>
       )}
       <p>
         <strong>Recipient:</strong> {campaign.recipient}

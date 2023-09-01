@@ -64,26 +64,32 @@ export default function WithdrawCard({ contractAddress, campaign }: Props) {
             You may withdraw your donation at any time until a campaign offer
             has been&nbsp;accepted.
           </p>
-          <Button type="submit" disabled={!isConnected || campaign.isAccepted}>
-            Withdraw
-          </Button>
+          <br />
+          {!isLoading && !isLoadingTx && (
+            <Button
+              type="submit"
+              disabled={!isConnected || campaign.isAccepted}
+            >
+              Withdraw
+            </Button>
+          )}
+          {(isLoading || isLoadingTx) && (
+            <BarLoader
+              width="65%"
+              cssOverride={{
+                marginLeft: "auto",
+                marginRight: "auto",
+                marginTop: "1rem",
+                marginBottom: "1rem",
+              }}
+            />
+          )}
+          {(isError || isErrorTx) && (
+            <div>
+              <div>{isError || isErrorTx}</div>
+            </div>
+          )}
         </Form>
-        {(isLoading || isLoadingTx) && (
-          <BarLoader
-            width="65%"
-            cssOverride={{
-              marginLeft: "auto",
-              marginRight: "auto",
-              marginTop: "1rem",
-              marginBottom: "0.5rem",
-            }}
-          />
-        )}
-        {(isError || isErrorTx) && (
-          <div>
-            <div>{isError || isErrorTx}</div>
-          </div>
-        )}
       </div>
     </>
   );

@@ -1,29 +1,18 @@
-This is a [RainbowKit](https://rainbowkit.com) + [wagmi](https://wagmi.sh) + [Next.js](https://nextjs.org/) project bootstrapped with [`create-rainbowkit`](https://github.com/rainbow-me/rainbowkit/tree/main/packages/create-rainbowkit).
-
-## Getting Started
-
-First, run the development server:
-
-```bash
-npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+                                _  __                 _
+                               | |/ _|               | |
+       ___ _ __ _____      ____| | |_ _   _ _ __   __| | ___   ___  _ __
+      / __| '__/ _ \ \ /\ / / _` |  _| | | | '_ \ / _` |/ _ \ / _ \| '__|
+     | (__| | | (_) \ V  V / (_| | | | |_| | | | | (_| | (_) | (_) | |
+      \___|_|  \___/ \_/\_/ \__,_|_|  \__,_|_| |_|\__,_|\___/ \___/|_|
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+                                                     by netdragonx.eth
 
-## Learn More
+```
 
-To learn more about this stack, take a look at the following resources:
+Crowdfundoor is a smart contract that allows users to crowdfund the purchase of an ERC721 token.
 
-- [RainbowKit Documentation](https://rainbowkit.com) - Learn how to customize your wallet connection flow.
-- [wagmi Documentation](https://wagmi.sh) - Learn how to interact with Ethereum.
-- [Next.js Documentation](https://nextjs.org/docs) - Learn how to build a Next.js application.
+The intended use is to help recover stolen assets.
 
-You can check out [the RainbowKit GitHub repository](https://github.com/rainbow-me/rainbowkit) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out the [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+This is a UI project that complements the [Crowdfundoor](https://github.com/netdragonx/crowdfundoor) contract.

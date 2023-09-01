@@ -7,6 +7,7 @@ import {
   usePrepareContractWrite,
   useWaitForTransaction,
 } from "wagmi";
+
 import { Campaign } from "../../types";
 import contractInterface from "../abi/crowdfundoor.json";
 
@@ -49,6 +50,7 @@ export default function WithdrawCard({ contractAddress, campaign }: Props) {
 
   useEffect(() => {
     if (doWrite) {
+      setDoWrite(false);
       write?.();
     }
   }, [write, doWrite]);
@@ -59,30 +61,30 @@ export default function WithdrawCard({ contractAddress, campaign }: Props) {
         <h2>Withdraw</h2>
         <Form onSubmit={onSubmit}>
           <p>
-            You can withdraw your donation at any time, unless a campaign has
-            been accepted.
+            You may withdraw your donation at any time until a campaign offer
+            has been&nbsp;accepted.
           </p>
           <Button type="submit" disabled={!isConnected || campaign.isAccepted}>
             Withdraw
           </Button>
         </Form>
+        {(isLoading || isLoadingTx) && (
+          <BarLoader
+            width="65%"
+            cssOverride={{
+              marginLeft: "auto",
+              marginRight: "auto",
+              marginTop: "1rem",
+              marginBottom: "0.5rem",
+            }}
+          />
+        )}
+        {(isError || isErrorTx) && (
+          <div>
+            <div>{isError || isErrorTx}</div>
+          </div>
+        )}
       </div>
-      {(isLoading || isLoadingTx) && (
-        <BarLoader
-          width="65%"
-          cssOverride={{
-            marginLeft: "auto",
-            marginRight: "auto",
-            marginTop: "1rem",
-            marginBottom: "0.5rem",
-          }}
-        />
-      )}
-      {(isError || isErrorTx) && (
-        <div>
-          <div>{isError || isErrorTx}</div>
-        </div>
-      )}
     </>
   );
 }

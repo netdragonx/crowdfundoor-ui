@@ -3,11 +3,13 @@ import { ethers } from "ethers";
 import { Campaign } from "../../types";
 import {
   useAccount,
+  useContractRead,
   useContractWrite,
   usePrepareContractWrite,
   useWaitForTransaction,
 } from "wagmi";
 import contractInterface from "../abi/crowdfundoor.json";
+import nftInterface from "../abi/erc721.json";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import { BarLoader } from "react-spinners";
 
@@ -18,14 +20,91 @@ interface Props {
 
 export default function AcceptCard({ contractAddress, campaign }: Props) {
   const [minimumAmount, setMinimumAmount] = useState<string>();
-  const { isConnected } = useAccount();
+  const [doWrite, setDoWrite] = useState(false);
+  const [doWriteApproval, setDoWriteApproval] = useState(false);
+  const [isHodler, setIsHodler] = useState<boolean>(false);
+  const [isApproved, setIsApproved] = useState<boolean>(false);
+  const { address, isConnected } = useAccount();
 
+  // Hodler check
+  useContractRead({
+    enabled: campaign != null && campaign.campaignId != null,
+    address: campaign?.tokenAddress,
+    abi: nftInterface,
+    functionName: "ownerOf",
+    args: [campaign?.tokenId],
+    onSuccess(data: any) {
+      setIsHodler(data == address);
+    },
+    onError() {
+      setIsHodler(false);
+    },
+  });
+
+  // GetApproval check
+  useContractRead({
+    enabled: campaign != null && campaign.campaignId != null && isHodler,
+    address: campaign?.tokenAddress,
+    abi: nftInterface,
+    functionName: "getApproved",
+    args: [campaign?.tokenId],
+    onSuccess(data: any) {
+      setIsApproved(data == contractAddress);
+    },
+    onError(error) {
+      setIsApproved(false);
+      console.error("getApproved error: ", error);
+    },
+  });
+
+  // Approval tx
+  const { config: configApproval, error: writeApprovalError } =
+    usePrepareContractWrite({
+      enabled:
+        campaign != null &&
+        campaign.campaignId != null &&
+        doWriteApproval &&
+        isHodler &&
+        !isApproved,
+      address: campaign?.tokenAddress,
+      abi: nftInterface,
+      functionName: "approve",
+      args: [contractAddress, campaign?.tokenId],
+    });
+
+  const {
+    data: dataApproval,
+    write: writeApproval,
+    isLoading: isLoadingApproval,
+    isError: isErrorApproval,
+  } = useContractWrite(configApproval);
+
+  const { isLoading: isLoadingApprovalTx, isError: isErrorApprovalTx } =
+    useWaitForTransaction({
+      hash: dataApproval && dataApproval.hash,
+      onSuccess() {
+        console.log("Approval transaction successful!");
+        setMinimumAmount(campaign?.amount);
+        setDoWrite(true);
+      },
+      onError(error) {
+        console.log(error);
+      },
+      onSettled(data, error) {
+        setMinimumAmount(undefined);
+        setDoWrite(false);
+      },
+    });
+
+  // Accept tx
   const { config: config, error: writeError } = usePrepareContractWrite({
     enabled:
       campaign != null &&
       campaign.campaignId != null &&
       minimumAmount != null &&
-      Number(minimumAmount) > 0,
+      Number(minimumAmount) > 0 &&
+      isHodler &&
+      isApproved,
     address: contractAddress,
     abi: contractInterface,
     functionName: "accept",
@@ -41,19 +120,40 @@ export default function AcceptCard({ contractAddress, campaign }: Props) {
     hash: data && data.hash,
     onSuccess() {
       console.log("Transaction successful!");
+    },
+    onError(error) {
+      console.log(error);
+    },
+    onSettled(data, error) {
       setMinimumAmount(undefined);
+      setDoWrite(false);
     },
   });
 
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
-    const target = e.target as HTMLFormElement;
-    setMinimumAmount(target.amount.value);
+
+    if (!isApproved) {
+      setDoWriteApproval(true);
+    } else {
+      setMinimumAmount(campaign?.amount);
+      setDoWrite(true);
+    }
   };
 
   useEffect(() => {
-    write?.();
-  }, [write]);
+    if (doWrite) {
+      setDoWrite(false);
+      write?.();
+    }
+  }, [write, doWrite]);
+
+  useEffect(() => {
+    if (doWriteApproval) {
+      setDoWriteApproval(false);
+      writeApproval?.();
+    }
+  }, [writeApproval, doWriteApproval]);
 
   return (
     <>
@@ -61,21 +161,51 @@ export default function AcceptCard({ contractAddress, campaign }: Props) {
         <h2>Accept Offer</h2>
         <Form onSubmit={onSubmit}>
           <p>
-            If you are the holder of this NFT, click accept to receive{" "}
+            Receive{" "}
             <strong>
               {ethers.utils.formatEther(campaign?.amount || "0")}
               &nbsp;ETH
             </strong>{" "}
-            in exchange for sending the NFT to the recipient listed above. You
-            will be prompted to approve Crowdfundoor to transfer this token
-            only.
+            in exchange for sending the NFT to the intended&nbsp;recipient.
           </p>
-          <Button type="submit" disabled={!isConnected || campaign.isAccepted}>
-            Accept
-          </Button>
+          <input
+            type="text"
+            name="minimumAmount"
+            placeholder="Enter current offer in ETH (MEV bot protection)"
+          />
+
+          {isHodler ? (
+            <>
+              {!isApproved && (
+                <Button
+                  type="submit"
+                  disabled={!isConnected || campaign.isAccepted}
+                >
+                  Approve Crowdfundoor
+                </Button>
+              )}
+              {isApproved && (
+                <Button
+                  type="submit"
+                  disabled={!isConnected || campaign.isAccepted}
+                >
+                  Accept &amp; Transfer
+                </Button>
+              )}
+            </>
+          ) : (
+            <>
+              <Button type="submit" disabled>
+                Your wallet doesn&apos;t hodl the NFT
+              </Button>
+            </>
+          )}
         </Form>
       </div>
-      {(isLoading || isLoadingTx) && (
+      {(isLoading ||
+        isLoadingTx ||
+        isLoadingApproval ||
+        isLoadingApprovalTx) && (
         <BarLoader
           width="65%"
           cssOverride={{

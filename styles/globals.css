@@ -47,15 +47,6 @@ a {
   padding-top: 20px;
 }
 
-/* .connect-button {
-  padding: 4px 12px;
-  border: none;
-  border-radius: 5px;
-  color: white;
-  font-size: 16px;
-  cursor: pointer;
-} */
-
 .form-container {
   margin: 20px;
   padding: 20px;
@@ -70,20 +61,6 @@ form input {
   border-radius: 5px;
   border: 1px solid #add8e6;
 }
-/* 
-form button {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  background-color: #87ceeb;
-  color: white;
-  font-size: 16px;
-  cursor: pointer;
-} */
-/* 
-form button:hover {
-  background-color: #add8e6;
-} */
 
 ul {
   list-style-type: none;
@@ -126,4 +103,8 @@ li:last-child {
 .total-donated {
   font-size: 28px;
   font-weight: bold;
+}
+
+.paddingTop {
+  padding-top: 20px;
 }

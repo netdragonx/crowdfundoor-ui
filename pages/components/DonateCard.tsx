@@ -1,15 +1,16 @@
-import { FormEvent, useEffect, useState } from "react";
 import { ethers } from "ethers";
-import { Campaign } from "../../types";
+import { FormEvent, useEffect, useState } from "react";
+import { Button, Col, Container, Form, Row } from "react-bootstrap";
+import { BarLoader } from "react-spinners";
 import {
   useAccount,
   useContractWrite,
   usePrepareContractWrite,
   useWaitForTransaction,
 } from "wagmi";
+
+import { Campaign } from "../../types";
 import contractInterface from "../abi/crowdfundoor.json";
-import { Button, Col, Container, Form, Row } from "react-bootstrap";
-import { BarLoader } from "react-spinners";
 
 interface Props {
   contractAddress: `0x${string}`;
@@ -60,6 +61,7 @@ export default function DonateCard({ contractAddress, campaign }: Props) {
 
   useEffect(() => {
     if (doWrite) {
+      setDoWrite(false);
       write?.();
     }
   }, [write, doWrite]);
@@ -69,34 +71,36 @@ export default function DonateCard({ contractAddress, campaign }: Props) {
       <div className="campaign-action">
         <h2>Donate</h2>
         <Form onSubmit={onSubmit}>
-          <p>Help raise funds for this campaign</p>
+          <p>Help raise funds for this&nbsp;campaign.</p>
+
           <input
             type="text"
             name="amount"
             placeholder="Amount in ETH"
             disabled={!isConnected}
           />
+
           <Button type="submit" disabled={!isConnected || campaign.isAccepted}>
             Donate
           </Button>
         </Form>
+        {(isLoading || isLoadingTx) && (
+          <BarLoader
+            width="65%"
+            cssOverride={{
+              marginLeft: "auto",
+              marginRight: "auto",
+              marginTop: "1rem",
+              marginBottom: "0.5rem",
+            }}
+          />
+        )}
+        {(isError || isErrorTx) && (
+          <div>
+            <div>{isError || isErrorTx}</div>
+          </div>
+        )}
       </div>
-      {(isLoading || isLoadingTx) && (
-        <BarLoader
-          width="65%"
-          cssOverride={{
-            marginLeft: "auto",
-            marginRight: "auto",
-            marginTop: "1rem",
-            marginBottom: "0.5rem",
-          }}
-        />
-      )}
-      {(isError || isErrorTx) && (
-        <div>
-          <div>{isError || isErrorTx}</div>
-        </div>
-      )}
     </>
   );
 }

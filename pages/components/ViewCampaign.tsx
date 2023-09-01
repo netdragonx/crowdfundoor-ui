@@ -2,12 +2,13 @@ import { FormEvent, useState } from "react";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import { BarLoader } from "react-spinners";
 import { useContractRead } from "wagmi";
+
 import { Campaign } from "../../types";
 import contractInterface from "../abi/crowdfundoor.json";
+import AcceptCard from "./AcceptCard";
 import CampaignCard from "./CampaignCard";
 import DonateCard from "./DonateCard";
 import WithdrawCard from "./WithdrawCard";
-import AcceptCard from "./AcceptCard";
 
 interface Props {
   contractAddress: `0x${string}`;
@@ -50,24 +51,28 @@ export default function ViewCampaign({ contractAddress }: Props) {
     onError(error) {
       setError(error.message);
     },
+    watch: true,
+    cacheTime: 3_000,
   });
 
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
     const target = e.target as HTMLFormElement;
 
+    setCampaign(undefined);
+    setError(undefined);
+
     if (target.campaignId.value == "") {
       return false;
     }
 
-    setError(undefined);
     setIsLoading(true);
     setCampaignId(target.campaignId.value);
   };
 
   return (
     <>
-      <h2>Donate to Existing Campaign</h2>
+      <h2>Donate to Campaign</h2>
 
       <Container className="form-container">
         <Row>
@@ -80,25 +85,25 @@ export default function ViewCampaign({ contractAddress }: Props) {
         </Row>
         {campaign ? (
           <>
-            <Row>
+            <Row className="paddingTop">
               <Col sm>
                 <CampaignCard campaign={campaign} />
               </Col>
             </Row>
             <Row>
-              <Col lg={3}>
+              <Col lg={4}>
                 <DonateCard
                   campaign={campaign}
                   contractAddress={contractAddress}
                 />
               </Col>
-              <Col lg={3}>
+              <Col lg={4}>
                 <WithdrawCard
                   campaign={campaign}
                   contractAddress={contractAddress}
                 />
               </Col>
-              <Col lg={6}>
+              <Col lg={4}>
                 <AcceptCard
                   campaign={campaign}
                   contractAddress={contractAddress}

@@ -7,6 +7,7 @@ import {
   usePrepareContractWrite,
   useWaitForTransaction,
 } from "wagmi";
+
 import { Campaign } from "../../types";
 import contractInterface from "../abi/crowdfundoor.json";
 
@@ -16,15 +17,16 @@ interface Props {
 
 export default function NewCampaign({ contractAddress }: Props) {
   const [campaign, setCampaign] = useState<Campaign>();
+  const [newCampaignId, setNewCampaignId] = useState<number>();
   const [doWrite, setDoWrite] = useState(false);
   const { isConnected } = useAccount();
 
   const { config: config, error: writeError } = usePrepareContractWrite({
     enabled:
       campaign != null &&
-      campaign.tokenAddress != "" &&
-      campaign.recipient != "" &&
-      campaign.tokenId != "" &&
+      campaign.tokenAddress != undefined &&
+      campaign.recipient != undefined &&
+      campaign.tokenId != undefined &&
       doWrite,
     address: contractAddress,
     abi: contractInterface,
@@ -34,10 +36,14 @@ export default function NewCampaign({ contractAddress }: Props) {
 
   const { data, write, isLoading, isError } = useContractWrite(config);
 
-  const { isLoading: isLoadingTx, isError: isErrorTx } = useWaitForTransaction({
+  const {
+    isLoading: isLoadingTx,
+    isError: isErrorTx,
+    isSuccess: isSuccessTx,
+  } = useWaitForTransaction({
     hash: data && data.hash,
-    onSuccess() {
-      console.log("Transaction successful!");
+    onSuccess(data: any) {
+      setNewCampaignId(parseInt(data.logs[0].topics[1]));
     },
     onError(error) {
       console.log(error);
@@ -69,8 +75,7 @@ export default function NewCampaign({ contractAddress }: Props) {
 
   return (
     <>
-      <h2>Start a New Campaign</h2>
-      {writeError && <div>{writeError.message}</div>}
+      <h2>Start new campaign</h2>
 
       <Container className="form-container">
         <Row>
@@ -87,10 +92,9 @@ export default function NewCampaign({ contractAddress }: Props) {
                 name="recipient"
                 placeholder="Recipient Address"
               />
-              <Button type="submit" disabled={!isConnected}>
-                Start Campaign
-              </Button>
+              <Button type="submit">Start Campaign</Button>
             </Form>
+
             {(isLoading || isLoadingTx) && (
               <BarLoader
                 width="65%"
@@ -105,10 +109,22 @@ export default function NewCampaign({ contractAddress }: Props) {
             {(isError || isErrorTx) && (
               <div>
                 <div>{isError || isErrorTx}</div>
+                {writeError && <div>{writeError.message}</div>}
               </div>
             )}
           </Col>
         </Row>
+        {(isSuccessTx || newCampaignId) && (
+          <Row>
+            <Col className="paddingTop">
+              <h4>Success.</h4>
+              <p>
+                You just started <strong>Campaign #{newCampaignId}</strong>.
+              </p>
+              <p>Tell your friends!</p>
+            </Col>
+          </Row>
+        )}
       </Container>
     </>
   );

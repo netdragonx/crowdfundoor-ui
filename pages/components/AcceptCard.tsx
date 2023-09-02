@@ -85,14 +85,12 @@ export default function AcceptCard({ contractAddress, campaign }: Props) {
       hash: dataApproval && dataApproval.hash,
       onSuccess() {
         console.log("Approval transaction successful!");
-        setMinimumAmount(campaign?.amount);
+        setIsApproved(true);
         setDoWrite(true);
       },
       onError(error) {
         console.log(error);
-      },
-      onSettled(data, error) {
-        setMinimumAmount(undefined);
+        setIsApproved(false);
         setDoWrite(false);
       },
     });
@@ -126,24 +124,24 @@ export default function AcceptCard({ contractAddress, campaign }: Props) {
       console.log(error);
     },
     onSettled(data, error) {
-      setMinimumAmount(undefined);
       setDoWrite(false);
     },
   });
 
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
+
     const target = e.target as HTMLFormElement;
-
-    if (target.minimumAmount.value == "") {
-      return false;
-    }
-
-    setMinimumAmount(target.minimumAmount.value);
 
     if (!isApproved) {
       setDoWriteApproval(true);
     } else {
+      if (target.minimumAmount?.value == "") {
+        target.className = target.className + " error";
+        return false;
+      }
+
+      setMinimumAmount(target.minimumAmount.value);
       setDoWrite(true);
     }
   };
@@ -165,7 +163,7 @@ export default function AcceptCard({ contractAddress, campaign }: Props) {
   return (
     <>
       <div className="card campaign-action">
-        <h2>Accept Offer</h2>
+        <h2>Accept</h2>
         <Form onSubmit={onSubmit}>
           <p>
             Receive{" "}
@@ -175,11 +173,6 @@ export default function AcceptCard({ contractAddress, campaign }: Props) {
             </strong>{" "}
             in exchange for sending the NFT to the intended&nbsp;recipient.
           </p>
-          <input
-            type="text"
-            name="minimumAmount"
-            placeholder="Enter current offer in ETH (MEV bot protection)"
-          />
 
           {!isLoading &&
             !isLoadingTx &&
@@ -189,24 +182,35 @@ export default function AcceptCard({ contractAddress, campaign }: Props) {
                 {isHodler ? (
                   <>
                     {!isApproved && (
-                      <Button
-                        type="submit"
-                        disabled={!isConnected || campaign.isAccepted}
-                      >
-                        Approve Crowdfundoor
-                      </Button>
+                      <>
+                        <br />
+                        <Button
+                          type="submit"
+                          disabled={!isConnected || campaign.isAccepted}
+                        >
+                          Approve Crowdfundoor
+                        </Button>
+                      </>
                     )}
                     {isApproved && (
-                      <Button
-                        type="submit"
-                        disabled={!isConnected || campaign.isAccepted}
-                      >
-                        Accept &amp; Transfer
-                      </Button>
+                      <>
+                        <input
+                          type="text"
+                          name="minimumAmount"
+                          placeholder="Enter current offer in ETH (MEV bot protection)"
+                        />
+                        <Button
+                          type="submit"
+                          disabled={!isConnected || campaign.isAccepted}
+                        >
+                          Accept &amp; Transfer NFT
+                        </Button>
+                      </>
                     )}
                   </>
                 ) : (
                   <>
+                    <br />
                     <Button type="submit" disabled>
                       Your wallet doesn&apos;t hodl the NFT
                     </Button>
@@ -218,20 +222,17 @@ export default function AcceptCard({ contractAddress, campaign }: Props) {
             isLoadingTx ||
             isLoadingApproval ||
             isLoadingApprovalTx) && (
-            <BarLoader
-              width="65%"
-              cssOverride={{
-                marginLeft: "auto",
-                marginRight: "auto",
-                marginTop: "1rem",
-                marginBottom: "1rem",
-              }}
-            />
-          )}
-          {(isError || isErrorTx) && (
-            <div>
-              <div>{isError || isErrorTx}</div>
-            </div>
+            <>
+              <BarLoader
+                width="65%"
+                cssOverride={{
+                  marginLeft: "auto",
+                  marginRight: "auto",
+                  marginTop: "2.75rem",
+                  marginBottom: "3rem",
+                }}
+              />
+            </>
           )}
         </Form>
       </div>

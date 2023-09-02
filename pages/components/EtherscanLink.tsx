@@ -28,15 +28,18 @@ export default function EtherscanLink({
             href={`${etherscanBasePaths[network]}/address/${address}`}
             target="_blank"
             rel="noreferrer"
+            className="link-etherscan"
           >
             {children}
+            {showBadge && (
+              <>
+                {" "}
+                <span className="badge rounded-pill bg-secondary">
+                  Etherscan
+                </span>
+              </>
+            )}
           </a>
-          {showBadge && (
-            <>
-              {" "}
-              <span className="badge rounded-pill bg-secondary">Etherscan</span>
-            </>
-          )}
         </>
       )}
     </>

@@ -29,15 +29,16 @@ export default function OpenSeaLink({
             href={`${openseaBasePaths[network]}/${tokenAddress}/${tokenId}`}
             target="_blank"
             rel="noreferrer"
+            className="link-opensea"
           >
             {children}
+            {showBadge && (
+              <>
+                {" "}
+                <span className="badge rounded-pill bg-primary">OpenSea</span>
+              </>
+            )}
           </a>
-          {showBadge && (
-            <>
-              {" "}
-              <span className="badge rounded-pill bg-primary">OpenSea</span>
-            </>
-          )}
         </>
       )}
     </>

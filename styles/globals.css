@@ -82,6 +82,17 @@ li:last-child {
   padding: 25px 10px 0px;
 }
 
+.campaign-details-footer {
+  padding-top: 1rem;
+  padding-bottom: 2rem;
+}
+
+a.link-opensea,
+a.link-etherscan {
+  font-size: 1.25rem !important;
+  text-decoration: none !important;
+}
+
 .campaign-action {
   padding: 25px 10px 0px;
   margin: 0px;
@@ -101,7 +112,7 @@ li:last-child {
 }
 
 .total-donated {
-  font-size: 28px;
+  font-size: 2.5rem;
   font-weight: bold;
 }
 

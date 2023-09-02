@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import { FormEvent, useEffect, useState } from "react";
-import { Button, Col, Container, Form, Row } from "react-bootstrap";
+import { Button, Form, Row } from "react-bootstrap";
 import { BarLoader } from "react-spinners";
 import {
   useAccount,
@@ -42,12 +42,12 @@ export default function DonateCard({ contractAddress, campaign }: Props) {
     hash: data && data.hash,
     onSuccess() {
       console.log("Transaction successful!");
+      setAmount(undefined);
     },
     onError(error) {
       console.log(error);
     },
     onSettled(data, error) {
-      setAmount(undefined);
       setDoWrite(false);
     },
   });
@@ -73,20 +73,21 @@ export default function DonateCard({ contractAddress, campaign }: Props) {
         <Form onSubmit={onSubmit}>
           <p>Help raise funds for this&nbsp;campaign.</p>
 
-          <input
-            type="text"
-            name="amount"
-            placeholder="Amount in ETH"
-            disabled={!isConnected}
-          />
-
           {!isLoading && !isLoadingTx && (
-            <Button
-              type="submit"
-              disabled={!isConnected || campaign.isAccepted}
-            >
-              Donate
-            </Button>
+            <>
+              <input
+                type="text"
+                name="amount"
+                placeholder="Amount in ETH"
+                disabled={!isConnected}
+              />
+              <Button
+                type="submit"
+                disabled={!isConnected || campaign.isAccepted}
+              >
+                Donate
+              </Button>
+            </>
           )}
 
           {(isLoading || isLoadingTx) && (
@@ -95,15 +96,10 @@ export default function DonateCard({ contractAddress, campaign }: Props) {
               cssOverride={{
                 marginLeft: "auto",
                 marginRight: "auto",
-                marginTop: "1rem",
-                marginBottom: "1rem",
+                marginTop: "2.75rem",
+                marginBottom: "3rem",
               }}
             />
-          )}
-          {(isError || isErrorTx) && (
-            <div>
-              <div>{isError || isErrorTx}</div>
-            </div>
           )}
         </Form>
       </div>

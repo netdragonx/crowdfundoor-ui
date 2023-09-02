@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-
+import { Row, Col } from "react-bootstrap";
 import { Campaign } from "../../types";
 import EtherscanLink from "./EtherscanLink";
 import OpenSeaLink from "./OpenSeaLink";
@@ -11,46 +11,64 @@ interface Props {
 export default function CampaignCard({ campaign }: Props) {
   if (!campaign) return null;
 
+  const truncateString = (str: string | `0x${string}` | undefined) => {
+    if (!str) {
+      return "";
+    }
+
+    if (str.length > 20) {
+      return str.slice(0, 8) + "..." + str.slice(-6);
+    }
+
+    return str;
+  };
+
   return (
     <div className="card campaign-details">
       <h4>Campaign #{campaign.campaignId} </h4>
       {!campaign.isAccepted ? (
-        <>
-          <p style={{ color: "green" }}>Active</p>
-          <p>
-            <span className="total-donated">
-              {ethers.utils.formatEther(ethers.BigNumber.from(campaign.amount))}{" "}
-              ETH
-            </span>
-            <br />
-            <strong>Total Donated</strong>
-          </p>
-        </>
+        <p>
+          <span className="total-donated">
+            {ethers.utils.formatEther(ethers.BigNumber.from(campaign.amount))}{" "}
+            ETH
+          </span>
+          <br />
+          <span className="badge bg-success">Total Donated</span>
+        </p>
       ) : (
-        <p style={{ color: "red" }}>Ended</p>
+        <p>
+          <span className="badge bg-danger">Campaign Ended</span>
+        </p>
       )}
-      <p>
-        <strong>Recipient:</strong>{" "}
-        <EtherscanLink address={campaign.recipient} showBadge={true}>
-          {campaign.recipient}
-        </EtherscanLink>
-      </p>
-      <p>
-        <strong>Token Address:</strong>{" "}
-        <EtherscanLink address={campaign.tokenAddress} showBadge={true}>
-          {campaign.tokenAddress}
-        </EtherscanLink>{" "}
-      </p>
-      <p>
-        <strong>Token ID:</strong>{" "}
-        <OpenSeaLink
-          tokenAddress={campaign.tokenAddress}
-          tokenId={campaign.tokenId}
-          showBadge={true}
-        >
-          {campaign.tokenId}
-        </OpenSeaLink>
-      </p>
+      <Row className="campaign-details-footer">
+        <Col md={2}></Col>
+        <Col md={8}>
+          <Row>
+            <Col md={5}>
+              <strong>To help fund the recovery of</strong>
+              <br />
+              <OpenSeaLink
+                tokenAddress={campaign.tokenAddress}
+                tokenId={campaign.tokenId}
+                showBadge={true}
+              >
+                {truncateString(campaign.tokenId)}
+              </OpenSeaLink>
+            </Col>
+            <Col md={2}>
+              <h1>&rarr;</h1>
+            </Col>
+            <Col md={5}>
+              <strong>To be delivered to</strong>
+              <br />
+              <EtherscanLink address={campaign.recipient} showBadge={true}>
+                {truncateString(campaign.recipient)}
+              </EtherscanLink>
+            </Col>
+          </Row>
+        </Col>
+        <Col md={2}></Col>
+      </Row>
     </div>
   );
 }

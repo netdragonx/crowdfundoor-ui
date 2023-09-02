@@ -68,7 +68,7 @@ export default function DonateCard({ contractAddress, campaign }: Props) {
 
   return (
     <>
-      <div className="campaign-action">
+      <div className="card campaign-action">
         <h2>Donate</h2>
         <Form onSubmit={onSubmit}>
           <p>Help raise funds for this&nbsp;campaign.</p>

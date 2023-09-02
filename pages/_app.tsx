@@ -5,6 +5,7 @@ import type { AppProps } from "next/app";
 import { configureChains, createConfig, WagmiConfig } from "wagmi";
 import { goerli, mainnet, polygon, sepolia } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
+import { alchemyProvider } from "wagmi/providers/alchemy";
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [
@@ -14,12 +15,15 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
       ? [goerli, sepolia]
       : []),
   ],
-  [publicProvider()]
+  [
+    alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_KEY || "" }),
+    publicProvider(),
+  ]
 );
 
 const { connectors } = getDefaultWallets({
   appName: "Crowdfundoor",
-  projectId: "6cc16f369432866263fb8ce5f2385d79",
+  projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_KEY || "",
   chains,
 });
 
@@ -30,14 +34,14 @@ const wagmiConfig = createConfig({
   webSocketPublicClient,
 });
 
-function MyApp({ Component, pageProps }: AppProps) {
+function Crowdfundoor({ Component, pageProps }: AppProps) {
   return (
     <WagmiConfig config={wagmiConfig}>
-      <RainbowKitProvider chains={chains}>
+      <RainbowKitProvider chains={chains} coolMode>
         <Component {...pageProps} />
       </RainbowKitProvider>
     </WagmiConfig>
   );
 }
 
-export default MyApp;
+export default Crowdfundoor;

@@ -2,7 +2,7 @@ import "@rainbow-me/rainbowkit/styles.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import React from "react";
-import { Button, Col, Container, Row } from "react-bootstrap";
+import { Col, Container, Row } from "react-bootstrap";
 
 import Header from "./components/Header";
 import NewCampaign from "./components/NewCampaign";
@@ -15,7 +15,7 @@ const App: React.FC = () => {
     <Container className="app">
       <Row>
         <Col className="app-header">
-          <Header />
+          <Header contractAddress={CONTRACT_ADDRESS} />
         </Col>
       </Row>
       <Row>

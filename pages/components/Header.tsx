@@ -1,13 +1,20 @@
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import React from "react";
+import EtherscanLink from "./EtherscanLink";
 
-const App: React.FC = () => {
+interface Props {
+  contractAddress: `0x${string}`;
+}
+
+export default function Header({ contractAddress }: Props) {
   return (
     <>
       <h1>Crowdfundoor</h1>
       <p>
+        <EtherscanLink address={contractAddress}>Contract</EtherscanLink>
+        &nbsp;&middot;&nbsp;
         <a
-          href="https://github.com/netdragonx/crowdfundoor"
+          href="https://github.com/netdragonx/crowdfundoor-ui"
           target="_blank"
           rel="noreferrer"
         >
@@ -31,6 +38,4 @@ const App: React.FC = () => {
       <ConnectButton label="Connect Wallet" showBalance={true} />
     </>
   );
-};
-
-export default App;
+}

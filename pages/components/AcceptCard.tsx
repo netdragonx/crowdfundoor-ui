@@ -49,6 +49,7 @@ export default function AcceptCard({ contractAddress, campaign }: Props) {
     functionName: "getApproved",
     args: [campaign?.tokenId],
     onSuccess(data: any) {
+      console.log("getApproved success: ", data);
       setIsApproved(data == contractAddress);
     },
     onError(error) {
@@ -163,7 +164,7 @@ export default function AcceptCard({ contractAddress, campaign }: Props) {
 
   return (
     <>
-      <div className="campaign-action">
+      <div className="card campaign-action">
         <h2>Accept Offer</h2>
         <Form onSubmit={onSubmit}>
           <p>

@@ -79,6 +79,7 @@ li:last-child {
 .campaign-details {
   display: block;
   overflow: auto;
+  padding: 25px 10px 0px;
 }
 
 .campaign-action {

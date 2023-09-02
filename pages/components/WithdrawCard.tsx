@@ -57,7 +57,7 @@ export default function WithdrawCard({ contractAddress, campaign }: Props) {
 
   return (
     <>
-      <div className="campaign-action">
+      <div className="card campaign-action">
         <h2>Withdraw</h2>
         <Form onSubmit={onSubmit}>
           <p>

@@ -87,10 +87,10 @@ li:last-child {
   padding-bottom: 2rem;
 }
 
-a.link-opensea,
-a.link-etherscan {
-  font-size: 1.25rem !important;
-  text-decoration: none !important;
+.campaign-details-footer a.link-opensea,
+.campaign-details-footer a.link-etherscan {
+  font-size: 1rem;
+  text-decoration: none;
 }
 
 .campaign-action {

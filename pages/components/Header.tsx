@@ -29,13 +29,15 @@ export default function Header({ contractAddress }: Props) {
           Twitter
         </a>
       </p>
+      <div className="sticky-top">
+        <ConnectButton label="Connect Wallet" showBalance={true} />
+      </div>
+      <br />
       <p>
         Crowdfundoor is a smart contract that allows users to crowdfund the
         purchase of an ERC721 token.
       </p>
       <p>The intended use is to help recover stolen assets.</p>
-
-      <ConnectButton label="Connect Wallet" showBalance={true} />
     </>
   );
 }
